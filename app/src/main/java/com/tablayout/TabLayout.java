@@ -421,6 +421,7 @@ public class TabLayout extends HorizontalScrollView {
     int mode;
     boolean inlineLabel;
     boolean tabIndicatorFullWidth;
+    boolean tabUseIndicatorColor;
     boolean unboundedRipple;
 
     private OnTabSelectedListener selectedListener;
@@ -472,7 +473,8 @@ public class TabLayout extends HorizontalScrollView {
         slidingTabIndicator.setSelectedIndicatorColor(a.getColor(R.styleable.TabLayout_tabIndicatorColor, 0));
         setSelectedTabIndicator(MaterialResources.getDrawable(context, a, R.styleable.TabLayout_tabIndicator));
         setSelectedTabIndicatorGravity(a.getInt(R.styleable.TabLayout_tabIndicatorGravity, INDICATOR_GRAVITY_BOTTOM));
-        setTabIndicatorFullWidth(a.getBoolean(R.styleable.TabLayout_tabIndicatorFullWidth, false));
+        setTabIndicatorFullWidth(a.getBoolean(R.styleable.TabLayout_tabIndicatorFullWidth, true));
+        setUseTabIndicatorColor(a.getBoolean(R.styleable.TabLayout_tabUseIndicatorColor, true));
 
 
         setSelectedTabIndicatorMode(a.getInt(R.styleable.TabLayout_tabIndicatorMode, INDICATOR_LINE));
@@ -944,6 +946,11 @@ public class TabLayout extends HorizontalScrollView {
      */
     public void setTabIndicatorFullWidth(boolean tabIndicatorFullWidth) {
         this.tabIndicatorFullWidth = tabIndicatorFullWidth;
+        ViewCompat.postInvalidateOnAnimation(slidingTabIndicator);
+    }
+
+    public void setUseTabIndicatorColor(boolean tabUseIndicatorColor) {
+        this.tabUseIndicatorColor = tabUseIndicatorColor;
         ViewCompat.postInvalidateOnAnimation(slidingTabIndicator);
     }
 
@@ -2435,6 +2442,8 @@ public class TabLayout extends HorizontalScrollView {
 
         private int indicatorLeft = -1;
         private int indicatorRight = -1;
+        private int indicatorTop = -1;
+        private int indicatorBottom = -1;
 
         private ValueAnimator indicatorAnimator;
 
@@ -2750,8 +2759,8 @@ public class TabLayout extends HorizontalScrollView {
                 indicatorHeight = selectedIndicatorHeight;
             }
 
-            int indicatorTop = 0;
-            int indicatorBottom = 0;
+            int indicatorTop = this.indicatorTop;
+            int indicatorBottom = this.indicatorBottom;
             int indicatorLeft = this.indicatorLeft;
             int indicatorRight = this.indicatorRight;
 
@@ -2778,8 +2787,8 @@ public class TabLayout extends HorizontalScrollView {
                 }
             } else {
                 int padding = dpToPx(4);
-                indicatorTop = (int) tabViewContentBounds.top - padding;
-                indicatorBottom = (int) tabViewContentBounds.bottom + padding;
+                indicatorTop = this.indicatorTop = Math.max(indicatorTop, (int) tabViewContentBounds.top - padding);
+                indicatorBottom = this.indicatorBottom = Math.max(indicatorBottom, (int) tabViewContentBounds.bottom + padding);
                 indicatorLeft -= 2 * padding;
                 indicatorRight += 2 * padding;
             }
@@ -2790,7 +2799,7 @@ public class TabLayout extends HorizontalScrollView {
                 selectedIndicator = DrawableCompat.wrap(tabSelectedIndicator != null ? tabSelectedIndicator : defaultSelectionIndicator);
                 selectedIndicator.setBounds(indicatorLeft, indicatorTop, indicatorRight, indicatorBottom);
 
-                if (selectedIndicatorPaint != null && tabSelectedIndicator == null) {
+                if (selectedIndicatorPaint != null && tabUseIndicatorColor) {
                     if (VERSION.SDK_INT <= VERSION_CODES.LOLLIPOP) {
                         // Drawable doesn't implement setTint in API 21
                         selectedIndicator.setColorFilter(selectedIndicatorPaint.getColor(), PorterDuff.Mode.SRC_IN);

@@ -11,11 +11,11 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        app:tabIndicator="@drawable/indicator"
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorGravity="bottom"
         app:tabIndicatorHeight="3dp"
-        app:tabIndicatorMode="rectangle"
+        app:tabIndicatorMode="line"
+        app:tabInlineLabel="true"
         app:tabIndicatorWidth="28dp"
         app:tabIndicatorWidthMode="wrap"
         app:tabMode="scrollable" />

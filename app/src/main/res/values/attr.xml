@@ -34,6 +34,7 @@
         </attr>
         <attr name="tabIndicatorAnimationDuration" format="integer" />
         <attr name="tabIndicatorFullWidth" format="boolean" />
+        <attr name="tabUseIndicatorColor" format="boolean" />
         <attr name="tabMode">
             <enum name="scrollable" value="0" />
             <enum name="fixed" value="1" />
