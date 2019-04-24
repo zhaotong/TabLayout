@@ -954,6 +954,10 @@ public class TabLayout extends HorizontalScrollView {
         ViewCompat.postInvalidateOnAnimation(slidingTabIndicator);
     }
 
+    public boolean isTabUseIndicatorColor() {
+        return tabUseIndicatorColor;
+    }
+
     /**
      * Get whether or not selection indicator width is fit to full width of the tab item, or fit to
      * the tab item's content.
